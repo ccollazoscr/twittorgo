@@ -2,6 +2,7 @@ package routers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -33,7 +34,7 @@ func LeoTweets(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error al leer los tweets", http.StatusBadRequest)
 		return
 	}
-
+	fmt.Println(respuesta)
 	w.Header().Set("context-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(respuesta)

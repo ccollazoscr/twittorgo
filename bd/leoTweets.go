@@ -2,7 +2,6 @@ package bd
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/ccollazoscr/twittorgo/models"
@@ -10,13 +9,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-/*LeoTweets lee tweets de un usuario especifico*/
+/*LeoTweets lee los tweets de un perfil */
 func LeoTweets(ID string, pagina int64) ([]*models.DevuelvoTweets, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-
 	db := MongoCN.Database("twittor")
-	col := db.Collection("usuarios")
+	col := db.Collection("tweet")
 
 	var resultados []*models.DevuelvoTweets
 
@@ -30,13 +28,12 @@ func LeoTweets(ID string, pagina int64) ([]*models.DevuelvoTweets, bool) {
 	opciones.SetSkip((pagina - 1) * 20)
 
 	cursor, err := col.Find(ctx, condicion, opciones)
-
 	if err != nil {
-		log.Fatal(err.Error())
 		return resultados, false
 	}
 
 	for cursor.Next(context.TODO()) {
+
 		var registro models.DevuelvoTweets
 		err := cursor.Decode(&registro)
 		if err != nil {
@@ -44,6 +41,5 @@ func LeoTweets(ID string, pagina int64) ([]*models.DevuelvoTweets, bool) {
 		}
 		resultados = append(resultados, &registro)
 	}
-
 	return resultados, true
 }
